@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Login</title>
+    </head>
+    <body>
+        <form id="form">
+            <input type="email" value="maxs7@gmail.com" id="email" />
+            <input type="password" value="121212" id="password" />
+            <button type="submit">Acceder</button>
+        </form>
+
+        <script>
+            const form = document.getElementById("form")
+            const email = document.getElementById("email");
+            const password = document.getElementById("password");
+
+            form.addEventListener("submit", async (e) => {
+                e.preventDefault();
+                try {
+                    const res = await fetch("/api/v1/auth/login", {
+                        method: "post",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({
+                            email: email.value,
+                            password: password.value,
+                        }),
+                    });
+
+                   
+                  console.log(res.ok, res.status);
+                  //const data = await res.json()
+
+                  const {token} = await res.json()
+                //  localStorage.setItem("token", data.token)
+                  //console.log(data)
+                   // const { token } = await res.json();
+
+                  //  window.location.href = "/protected.html";
+                } catch (error) {
+                    console.log(error);
+                }
+            });
+        </script>
+    </body>
+</html>

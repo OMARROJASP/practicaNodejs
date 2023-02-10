@@ -1,7 +1,8 @@
 import express from "express";
-import { login, register } from "../controllers/auth.controller.js";
+import { infoUser, login, logout, refreshToken, register } from "../controllers/auth.controller.js";
 import {body} from "express-validator"
 import { validationResultExpress } from "../middlewares/validationResultExpress.js";
+import { requiereToken } from "../middlewares/requiereToken.js";
 
 
 const router = express.Router();
@@ -39,4 +40,9 @@ router.get("/register",register);
 
 router.get("/login",login);
 
+router.get("/protected",requiereToken,infoUser);
+
+router.get("/refresh",refreshToken);
+
+router.get("/logout",logout);
 export default router;

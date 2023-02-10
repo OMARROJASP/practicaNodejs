@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Ruta protegida</title>
+    </head>
+    <body>
+        <h1>Ruta protegida</h1>
+        <div id="app">
+            <h2>Email: </h2>
+        </div>
+       <button id="logout">Logout</button>
+
+        <script>
+
+            const logout = document.getElementById('logout')
+            logout.addEventListener('click', async() => {
+                const resToken = await fetch("/api/v1/auth/logout",{
+                      method: 'GET',
+                })
+                console.log(res)
+            })
+            document.addEventListener("DOMContentLoaded", async (e) =>{
+  
+
+              //  const  token = localStorage.getItem('token')
+                try {
+
+                    const resToken = await fetch("/api/v1/auth/refresh",
+                    {
+                        method: 'GET',
+                        credentials: "include",
+                    })
+                    console.log(resToken.ok, resToken.status);
+                    const {token} = await resToken.json()
+
+                        const res = await fetch("/api/v1/auth/protected",{
+                        method: 'GET',
+                        headers:    {
+                          //  Authorization: "Bearer " + token,
+                           // Authorization: `Bearer ${token}`,
+                         //  "Content-Type": "application/json",
+                            Authorization: "Bearer " + token,
+                        },
+                       // credentials: "include",
+
+                    });
+                    console.log(res.ok, res.status);
+                    const data = await res.json()
+                    
+                    if(res.ok){
+                        const app = document.getElementById('app').textContent = data.email;
+                    }
+                    
+                    console.log(data)
+                } catch (error) {
+                    console.log(error)
+                }
+
+            })
+
+            /*
+            document.addEventListener("DOMContentLoaded", async (e) => {
+                const app = document.querySelector("#app");
+                try {
+                    const resToken = await fetch("/api/v1/auth/refresh", {
+                        credentials: "include",
+                    });
+                    console.log(resToken.ok, resToken.status);
+                    const { token } = await resToken.json();
+                    // console.log(token);
+
+                    const res = await fetch("/api/v1/auth/protected", {
+                        headers: {
+                            Authorization: "Basic " + token,
+                        },
+                    });
+                    console.log(res.ok, res.status);
+
+                    if (!res.ok) {
+                        window.location.href = "/";
+                    }
+
+                    const { user } = await res.json();
+                    console.log(user);
+
+                    app.innerHTML = `
+                        <h2>Email: ${user.email}</h2>
+                        <h3>UID: ${user._id}</h3>
+                    `;
+                } catch (error) {
+                    console.log(error);
+                }
+
+                const logout = document.querySelector("#logout");
+                logout.addEventListener("click", async () => {
+                    const res = await fetch("/api/v1/auth/logout");
+                    console.log(res.ok, res.status);
+                    if (res.ok) {
+                        window.location.href = "/";
+                    }
+                });
+            });
+            */
+        </script>
+    </body>
+</html>

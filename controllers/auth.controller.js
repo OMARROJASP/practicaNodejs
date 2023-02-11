@@ -12,7 +12,12 @@ export const register = async(req, res)=>{
             user = new User({email, password})
             await user.save();
         }
-        return res.state(200).json({ok: 'se ha registro correctamente'})
+
+        const {token, expiresIn} = generateToken(user.id)
+        generateRefreshToken(user.id, res)
+       
+
+        return res.state(201).json({token, expiresIn})
     }catch(error){
         if(error.code === 11000){
             return res.status(404).json({error: "Ya existe el usuario"})
@@ -77,25 +82,12 @@ export const  infoUser = async(req, res)=> {
 export const refreshToken = (req, res) => {
   
     try {
-        const  refreshTokenCookie = req.cookies?.refreshToken;
-        if (!refreshTokenCookie) throw new Error("No existe el refreshToken");
-
-        const {uid} =  jwt.verify(refreshTokenCookie, process.env.JWT_REFRESH)
-        const {token, expiresIn} = generateToken(uid)
+        const {token, expiresIn} = generateToken(req.uid)
         return res.json({token, expiresIn})
     
     } catch (error) {
         console.log(error)
-        const TokenVerificationErrors = {
-            "invalid signature": "La firma del JWT no es válida",
-            "jwt expired": "JWT expirado",
-            "invalid token": "Token no válido",
-            "No Bearer": "Utiliza formato Bearer",
-            "jwt malformed": "JWT formato no válido"
-        };
-
-       
-        return res.status(401).json({error: TokenVerificationErrors[error.message]})
+        return res.status(500).json({error: "error de server"})
     }
     
 }

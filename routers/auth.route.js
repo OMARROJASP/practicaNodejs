@@ -1,40 +1,16 @@
 import express from "express";
 import { infoUser, login, logout, refreshToken, register } from "../controllers/auth.controller.js";
 import {body} from "express-validator"
-import { validationResultExpress } from "../middlewares/validationResultExpress.js";
 import { requiereToken } from "../middlewares/requiereToken.js";
+import { requiereRefreshToken } from "../middlewares/requiereRefreshToken.js";
+import { bodyRegisterValidator, bodyLoginValidator } from "../middlewares/validationManeger.js";
 
 
 const router = express.Router();
 
-router.post("/register",[
-    body("email", "formato del email Incorrecto")
-        .trim()
-        .isEmail()
-        .normalizeEmail(),
-    body("password","minimo 6 caracteres")
-        .trim()
-        .isLength({min:6}),
-    body("password","formato de password incorrecta")
-        .custom((value,{req})=>{
-            if(value != req.body.repassword){
-                throw new Error('no coinden las contraseñas')
-            }
-            return value
-        })
-],
-validationResultExpress,register)
+router.post("/register",bodyRegisterValidator,register)
 
-router.post("/login",[
-    body('email',"Formato de email Incorrecto")
-        .trim()
-        .isEmail()
-        .normalizeEmail(),
-    body("password","minimo 6 caracteres")
-        .trim()
-        .isLength({min:6}),
-
-],validationResultExpress,login)
+router.post("/login",bodyLoginValidator,login)
 
 router.get("/register",register);
 
@@ -42,7 +18,7 @@ router.get("/login",login);
 
 router.get("/protected",requiereToken,infoUser);
 
-router.get("/refresh",refreshToken);
+router.get("/refresh",requiereRefreshToken,refreshToken);
 
 router.get("/logout",logout);
 export default router;

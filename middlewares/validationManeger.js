@@ -7,9 +7,11 @@ export const validationResultExpress = (req, res,next) => {
     if(!errors.isEmpty()){
         return res.status(400).json({errors: errors.array()})
     }
-
     next()
 }
+
+
+
 
 export const paramLinkValidator = [
     param("id","Formato no valido(expressvALIDATOR)")
@@ -18,6 +20,7 @@ export const paramLinkValidator = [
     .escape()
     ,validationResultExpress
 ]
+
 
 
 export  const bodyLinkValidator = [
@@ -30,9 +33,6 @@ export  const bodyLinkValidator = [
             if(!value.startsWith("https://")){
                 value = "https://" + value
             }
-              
-
-           
             await axios.get(value);
             return value;
         } catch (error) {
@@ -53,14 +53,16 @@ body("password","minimo 6 caracteres")
     .trim()
     .isLength({min:6}),
 body("password","formato de password incorrecta")
-    .custom((value,{req})=>{
-        if(value != req.body.repassword){
+    .custom((value,{req })=>{
+        if(value !== req.body.repassword){
             throw new Error('no coinden las contraseñas')
         }
         return value
     }),
     validationResultExpress
 ];
+
+
 
 export const bodyLoginValidator = [
     body('email',"Formato de email Incorrecto")

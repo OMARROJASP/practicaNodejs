@@ -8,7 +8,7 @@
     </head>
     <body>
         <form id="form">
-            <input type="email" value="maxs8@gmail.com" id="email" />
+            <input type="email" value="maxs1@gmail.com" id="email" />
             <input type="password" value="121212" id="password" />
             <button type="submit">Acceder</button>
         </form>
@@ -21,7 +21,7 @@
             form.addEventListener("submit", async (e) => {
                 e.preventDefault();
                 try {
-                    const res = await fetch("/api/v1/auth/login", {
+                    const res = await fetch("http://localhost:5000/api/v1/auth/login", {
                         method: "post",
                         headers: {
                             "Content-Type": "application/json",

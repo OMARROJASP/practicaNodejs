@@ -23,7 +23,8 @@ export const register = async(req, res)=>{
             return res.status(404).json({error: "Ya existe el usuario"})
         }
     }
-
+ 
+    console.log({email, password})
     return res.status(200).json({ok: 'se ha registro correctamente ❤️❤️❤️'})
 }
 

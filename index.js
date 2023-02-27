@@ -18,8 +18,10 @@ app.use(cors({
     return callback(
         "Error de CORS origin: " + origin + " No autorizado!"
     )
-    }
-}))
+    },
+    credentials: true,
+}
+))
 app.use(express.json());
 app.use(cookieParser())
 app.use('/', redirectRoute)
